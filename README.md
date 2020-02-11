@@ -1,2 +1,2 @@
 # fellov
- Feasible Ellipsoid Overlap
+ Feasible Ellipse Overlap

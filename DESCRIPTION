@@ -1,13 +1,13 @@
 Package: fellov
 Type: Package
-Title: Feasible Ellipsoid Overlap
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: A small package for determining if n-dimensional ellipsoids overlap.
+Title: Feasible Ellipse Overlap
+Version: 0.1
+Author: Anna Damkjær Laksafoss
+Maintainer: Anna Damkjær Laksafoss <vbs190@alumni.ku.dk>
+Description: A small package for determining if n-dimensional ellipses overlap.
 Depends: R (>= 3.1.0)
 License: GPL 
 Encoding: UTF-8
 LazyData: true
+Suggests: testthat
 RoxygenNote: 7.0.0
-VignetteBuilder: knitr

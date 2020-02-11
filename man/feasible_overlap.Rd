@@ -2,35 +2,61 @@
 % Please edit documentation in R/feasible_overlap.R
 \name{feasible_overlap}
 \alias{feasible_overlap}
-\title{Feasibility of Ellipsoid Overlap}
+\title{Find Smallest Feasible Ellipse Overlap}
 \usage{
-feasible_overlap(ell, width = 1, method = "QP", ...)
+feasible_overlap(ell, ...)
 }
 \arguments{
-\item{ell}{a list of length at least 2 describing the ellipsoids.}
+\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.}
 
-\item{width}{a vector the (non-negative) widths of ellipsoids in the
-ellipsoid precision matrix norm.}
-
-\item{method}{a character string indicating the method used for solving the
-feasibility problem. The standard is "\code{QP}".}
-
-\item{...}{additional arguments to be passed to the low level feasibility
-method.}
+\item{...}{additional arguments to be passed to \code{\link{find_overlap}}}
 }
 \value{
-logical.
+\code{feasible_overlap} returns an object of \code{\link[base]{class}}
+"\code{feasible_overlap}". This object is a list with the following entries:
+  \item{radii}{the smallest ellipse radii resulting in a non-empty
+    intersection.}
+  \item{x}{The limiting common point.}
+  \item{distance}{The ellipse specific distances.}
+  \item{call}{The matched call.}
 }
 \description{
-Determin if the ellipsoids overlap.
+\code{feasible_overlap} will find the smallest radius such that the ellipses
+have a non-empty intersection.
 }
 \details{
-long long description
+Given a list of ellipses \code{ell} the function \code{feasible_overlap} will
+find the smallest radius such that the ellipses from \code{ell} overlap.
+
+Note that it is not necessary to specify ellipse radii in \code{ell}.
 }
 \examples{
-ell <- list(
-  list(B = c(0,0), M = matrix(c(1,0,0,1), ncol = 2)),
-  list(B = c(1,1), M = matrix(c(1,0,0,1), ncol = 2))
-)
+## two dimensional ellipses
+e1 <- list("c" = c(1,1), "P" = matrix(c(2,0,0,0.5), ncol = 2))
+e2 <- list("c" = c(0,0), "S" = matrix(c(1, 0.2, 0.2, 2), ncol = 2), "r" = 1)
+# note: it is not necessary to specify an ellipse radius "r"
+
+feasible_overlap(list(e1, e2))
+
+
+## regression example
+# generate data
+n <- 100
+E <- rbinom(n, 1, 0.5)
+X <- rnorm(n, E * 3, 1)
+Y <- rnorm(n, 2 + 1.5 * X, 1)
+
+# create confidence region ellipses
+m0 <- lm(Y ~ X, data = data.frame(Y, X), subset = (E == 0))
+m1 <- lm(Y ~ X, data = data.frame(Y, X), subset = (E == 1))
+ConfRegion0 <- list(c = coefficients(m0), S = vcov(m0))
+ConfRegion1 <- list(c = coefficients(m0), S = vcov(m0))
+
+# find smallest radius
+res <- feasible_overlap(list(ConfRegion0, ConfRegion1))
+# this radius now corresponds to the chisq quantile at which
+# the confidence regions intersect non-emptily.
+# In other words the (1 - alpha)-confidence intervals intersect for alpha:
+alpha <- pchisq(res$radii, 2)
 
 }

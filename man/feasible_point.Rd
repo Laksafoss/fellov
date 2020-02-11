@@ -2,34 +2,45 @@
 % Please edit documentation in R/feasible_point.R
 \name{feasible_point}
 \alias{feasible_point}
-\title{Find An Overlap of Ellipsoids}
+\title{Find Feasible Point in Ellipse Overlap}
 \usage{
-feasible_point(ell, initial, method = "QP", ...)
+feasible_point(ell, ...)
 }
 \arguments{
-\item{ell}{a list of length at least 2 describing the ellipsoids.}
+\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.}
 
-\item{initial}{starting value for the overlap point.}
-
-\item{method}{a character string indicating the method used for solving the
-feasibility problem. The standard is "\code{QP}".}
-
-\item{...}{additional arguments to be passed to the low level feasibility
-method.}
+\item{...}{additional arguments to be passed to \code{\link{find_overlap}}.}
 }
 \value{
-logical.
+\code{feasible_point} returns an object of \code{\link[base]{class}}
+  "\code{feasible_point}" with the following entries
+  \item{x }{ An interior point.}
+  \item{distance }{ A data.frame with the ellipse specific distances.}
+  \item{optim }{ The final internal optimization value.}
+  \item{call }{ The matched call.}
 }
 \description{
-Find the smallest width of ellipsoids resulting in an overlap.
+\code{feasible_point} will find a point in the interior of the intersection
+of two or more fully specified ellipses. If the intersections is empty
+\code{NA} is returned.
 }
 \details{
-long long description
+\code{feasible_point} will find a point in the interior of the intersection
+of two or more fully specified ellipses \code{ell}. If the intersections is
+empty \code{NA} is returned.
 }
 \examples{
-ell <- list(
-  list(B = c(0,0), M = matrix(c(1,0,0,1), ncol = 2)),
-  list(B = c(1,1), M = matrix(c(1,0,0,1), ncol = 2))
-)
+# two dimensional ellipses
+e1 <- list("c" = c(1,2), "P" = matrix(c(2,0,0,1), ncol = 2), "r" = 3)
+e2 <- list("c" = c(0,0), "S" = matrix(c(1, 0.2, 0.2, 2), ncol = 2), "r" = 1)
+
+# find point in intersection
+feasible_point(list(e1, e2))
+
+# make new ellipse
+e3 <- list("c" = c(2,2), "P" = matrix(c(1,0,0,1), ncol = 2), "r" = 0.5)
+
+# now there is no overlap
+feasible_point(list(e1, e2, e3))
 
 }

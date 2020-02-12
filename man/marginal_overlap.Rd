@@ -7,7 +7,7 @@
 marginal_overlap(ell, margins = "all")
 }
 \arguments{
-\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipses}}.}
+\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.}
 
 \item{margins}{either "all" or a vector indicating the margins to project the
 ellipses onto and take intersections.}
@@ -16,15 +16,13 @@ ellipses onto and take intersections.}
 \code{marginal_overlap} returns an object of \code{\link[base]{class}}
 "marginal_overlap" which contains a data.frame where the coloumns descibe the
 following
-  \description{
-    \item{Margin}{Intputted \code{margins}.}
+  \item{Margin}{Intputted \code{margins}.}
     \item{Overlap}{Whether the ellipses overlap when projected onto
       corresponding margin.}
     \item{Lower}{Lower endpoint of intersection interval. \code{NA} if the
       intersection is empty.}
     \item{Upper}{Upper endpoint of intersection interval. \code{NA} if the
       intersection is empty.}
-  }
 }
 \description{
 Determin if the projections of ellipses onto each margin overlap.
@@ -69,4 +67,8 @@ q <- qchisq(0.95, 2) # df = 2, as there are two covariates (1, X)
 ell0 <- list(c = coefficients(lm_E0), S = vcov(lm_E0), r = q)
 ell1 <- list(c = coefficients(lm_E1), S = vcov(lm_E1), r = q)
 marginal_overlap(list(ell0, ell1))
+}
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization.
 }

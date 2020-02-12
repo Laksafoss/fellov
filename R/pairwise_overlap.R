@@ -9,7 +9,7 @@
 #' intersection of all the ellipses is non-empty. The example below is
 #' constructed to illustrate this.
 #'
-#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipses}}..
+#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.
 #' @param ... additional arguments to be passed to the low level funcitons.
 #'
 #' @return
@@ -20,6 +20,9 @@
 #'   two ellipses intersected and the last coloumn indicate if they have a
 #'   non-empty intersection.}
 #' \item{call }{ the matched call.}
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization.
 #'
 #' @examples
 #' ## three different two dimensional ellipses
@@ -68,7 +71,7 @@ pairwise_overlap <- function(ell, ...) {
     names(ell)
   }
   if (any(nam == "")) {nam[nam == ""] <- paste0("ell ", which(nam == ""))}
-  test_list <- combn(seq_along(ell), 2)
+  test_list <- utils::combn(seq_along(ell), 2)
   res <- sapply(seq_len(ncol(test_list)), function(i) {
     t <- test_list[,i]
     e1 <- new_ell[[t[1]]]

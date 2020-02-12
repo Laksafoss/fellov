@@ -7,7 +7,7 @@
 pairwise_overlap(ell, ...)
 }
 \arguments{
-\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipses}}..}
+\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.}
 
 \item{...}{additional arguments to be passed to the low level funcitons.}
 }
@@ -59,4 +59,8 @@ E1 <- list(c = coefficients(m1), S = vcov(m1), r = q)
 E2 <- list(c = coefficients(m2), S = vcov(m2), r = q)
 pairwise_overlap(list("model 0" = E0, "model 1" = E1, "model 2" = E2))
 
+}
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization.
 }

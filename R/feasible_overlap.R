@@ -9,7 +9,7 @@
 #' Note that it is not necessary to specify ellipse radii in \code{ell}.
 #'
 #'
-#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.
+#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.
 #' @param ... additional arguments to be passed to \code{\link{find_overlap}}
 #'
 #' @return \code{feasible_overlap} returns an object of \code{\link[base]{class}}
@@ -19,6 +19,9 @@
 #'   \item{x}{The limiting common point.}
 #'   \item{distance}{The ellipse specific distances.}
 #'   \item{call}{The matched call.}
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization.
 #'
 #' @examples
 #' ## two dimensional ellipses
@@ -78,9 +81,14 @@ print.feasible_overlap <- function(x, ...) {
       "\n\n", sep = "")
   cat("Limiting Intersection Point:\n  ", x$x, "\n\n")
   cat("Ellipse Specific Distance:\n")
+  pp <- seq_len(nrow(x$distance))
   if (is.null(row.names(x$distance))) {
-    row.names(x$distance) <- paste0("ellipse ", seq_len(nrow(x$distance)), ": ")
+    row.names(x$distance) <- paste0("ellipse ", pp, ": ")
   }
+  if (all(row.names(x$distance) == pp)) {
+    row.names(x$distance) <- paste0("ellipse ", pp, ": ")
+  }
+
   print(x$distance)
   cat("\n")
   invisible(x)

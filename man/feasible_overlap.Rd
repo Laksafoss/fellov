@@ -7,7 +7,7 @@
 feasible_overlap(ell, ...)
 }
 \arguments{
-\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.}
+\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.}
 
 \item{...}{additional arguments to be passed to \code{\link{find_overlap}}}
 }
@@ -59,4 +59,8 @@ res <- feasible_overlap(list(ConfRegion0, ConfRegion1))
 # In other words the (1 - alpha)-confidence intervals intersect for alpha:
 alpha <- pchisq(res$radii, 2)
 
+}
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization.
 }

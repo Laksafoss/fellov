@@ -7,7 +7,7 @@
 feasible_point(ell, ...)
 }
 \arguments{
-\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.}
+\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.}
 
 \item{...}{additional arguments to be passed to \code{\link{find_overlap}}.}
 }
@@ -43,4 +43,8 @@ e3 <- list("c" = c(2,2), "P" = matrix(c(1,0,0,1), ncol = 2), "r" = 0.5)
 # now there is no overlap
 feasible_point(list(e1, e2, e3))
 
+}
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization.
 }

@@ -23,11 +23,15 @@
 #' @param initial a numeric vectors or matrix with initial values for the
 #'   parameters to be optimized over.
 #' @param centering_steps number of centering steps, must be atleast 1.
-#' @param tol_newton TODO
-#' @param mu TODO
-#' @param alpha TODO
-#' @param beta TODO
-#' @param tol_step TODO
+#' @param tol_newton tolerance for the newton method in each centering step.
+#' @param mu tuning parameter for centering method.
+#' @param alpha tuning parameter for backtracking lineseach in newton  steps.
+#' @param beta tuning parameter for backtracking lineseach in newton  steps.
+#' @param tol_step meachnism for jumping to the next centoring step
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization. The functions \code{\link{feasible_overlap}} and
+#' \code{\link{feasible_point}} both use \code{find_overlap} internally.
 #'
 #' @return
 #' The function \code{find_overlap} returns an object of \code{\link[base]{class}}
@@ -36,14 +40,11 @@
 #' \item{s }{ the optimal value at the global minimum.}
 #' \item{call }{ the matched call.}
 #'
-#' @examples
-#' e1 <- list(c = c(0,0), P = matrix(c(1,0,0,1), ncol = 2), r = 2)
-#' e2 <- list(c = c(1,1), P = matrix(c(1,0,0,1), ncol = 2), r = 1)
-#' e3 <- list(c = c(1,0), S = matrix(c(3,1,1,2), ncol = 2), r = 0.5)
 #'
-#' ellipse_overlap(list(e1, e2, e3))
+#' @keywords internal
+#'
 #' @export
-find_overlap <- function(ell, initial, centering_steps = 5L, tol_newton = 0.1, mu = 20, alpha = 0.3, beta = 0.8, tol_step = 1e-5) {
+find_overlap <- function(ell, initial, centering_steps = 3L, tol_newton = 0.1, mu = 20, alpha = 0.3, beta = 0.8, tol_step = 1e-5) {
   if (! is.numeric(centering_steps)) {stop("'centering_steps' must be an integer larget than 1.")}
   centering_steps <- as.integer(centering_steps)
   if (centering_steps < 1L) {stop("'centering_steps' must be an integer larger than 1.")}
@@ -61,7 +62,7 @@ find_overlap <- function(ell, initial, centering_steps = 5L, tol_newton = 0.1, m
   if (missing(initial)) {
     tmp <- sapply(ell, function(e) {e$c})
     if (is.null(dim(tmp))) { x <- mean(tmp) } else { x <- rowMeans(tmp) }
-  } else if (length(initial) == nn[1]) {
+  } else if (length(initial) == length(ell[[1]]$c)) {
     if (is.numeric(initial)) {
       x <- initial
     } else {
@@ -70,8 +71,66 @@ find_overlap <- function(ell, initial, centering_steps = 5L, tol_newton = 0.1, m
   } else {
     stop("'initial' must be a numeric vector of length equal to ellipse dimension.")
   }
+
+  # -- Define relevamt functions
+  pp <- seq_along(x)
+  distance_to_edge <- function(x) {
+    sapply(ell, function(e) {
+      diff <- x - e$c
+      t(diff) %*% e$P %*% diff - e$r
+    })
+  }
+  speed <- function(x) {
+    lapply(ell, function(e) {
+      2 * e$P %*% x + e$q
+    })
+  }
+  acceleration <- function(x) {
+    lapply(ell, function(e) {
+      2 * e$P
+    })
+  }
+  target <- function(s, tune, dist) {
+    tune * s - sum(log(s - dist))
+  }
+  target_gradient <- function(s, tune, dist, spee) {
+    top <- tune - sum(1 / (s - dist))
+    v <- lapply(pp, function(i) {
+      (1 / (s - dist[[i]])) * spee[[i]]
+    })
+    bottom <- Reduce("+", v)
+    return(matrix(c(top, bottom), ncol = 1))
+  }
+  target_hessian <- function(s, tune, dist, spee, acc) {
+    dsds <- sum(1 / (s - dist) ^ 2)
+    v <- lapply(pp, function(i) {
+      (1 / (s - dist[[i]]) ^ 2) * spee[[i]]
+    })
+    dsdx <- - Reduce("+", v)
+    m <- lapply(pp, function(i) {
+      (1 / (s - dist[[i]]) ^ 2) * spee[[i]] %*% t(spee[[i]]) +
+        (1 / (s - dist[[i]])) * acc[[i]]
+    })
+    dxdx <- Reduce("+", m)
+    return(cbind(rbind(dsds, dsdx), rbind(t(dsdx), dxdx)))
+  }
+  linesearch_test <- function(min_s, s, x, dist, decrement, tune, delta, step) {
+    s_delta <- s + step * delta[1, ]
+    if (s_delta <= min_s) {return(TRUE)}
+    dist_delta <- distance_to_edge(x + step * delta[-1, ])
+    if (max(dist_delta) >= s_delta){return(TRUE)}
+    if(target(s_delta, tune, dist_delta) >
+       (target(s, tune, dist) + alpha * step * decrement)) {
+      return(TRUE)
+    }
+    return(FALSE)
+  }
+
+
+
+  #  -- Centering
   min_s <- sum(sapply(ell, function(e) {-e$r}))
-  dist <- distance_to_edge(x, ell)
+  dist <- distance_to_edge(x)
   s <- max(dist) + 1e-5
   tune <- (sum(1 / (s - dist)) * s + 1) / s
 
@@ -82,28 +141,37 @@ find_overlap <- function(ell, initial, centering_steps = 5L, tol_newton = 0.1, m
     ss <- TRUE # allowes jumps to next centering if s becomes smaller than 0
     while ( (lambda / 2 > tol_newton) & ss) {
       # .. calculate direction and decrement
-      dist <- distance_to_edge(x, ell)
-      spee <- speed(ell, x)
-      acc <- acceleration(ell, x)
+      dist <- distance_to_edge(x)
+      spee <- speed(x)
+      acc <- acceleration(x)
       gradient <- target_gradient(s, tune, dist, spee)
       hessian <- target_hessian(s, tune, dist, spee, acc)
-      inv_hessian <- tryCatch( #                               SHOULD WE MAKE THIS
-        solve(hessian),error = function(e) { #                 MORE ADVANCED ??
-          solve(hessian + diag(diag(hessian) * 0.001, nrow(hessian)))})
+      if (rcond(hessian) < 2e-15) {
+        add <- diag(diag(hessian) * 1e-3)
+        inv_hessian <- solve(hessian + add)
+      } else {
+        inv_hessian <- solve(hessian)
+      }
       delta <- - inv_hessian %*% gradient
       lambda <- - t(gradient) %*% delta
 
       # .. linesearch
       step <- 1
-      while (linesearch_test(ell, min_s, s, x, dist, lambda, tune,
-                             delta, step)) {
-        if (step < tol_step) {step <- 0; ss <- FALSE} else {step <- beta * step}
+      while (linesearch_test(min_s, s, x, dist, lambda, tune, delta, step)) {
+        if (step < tol_step) {
+          step <- 0
+          ss <- FALSE
+        } else {
+          step <- beta * step
+        }
       }
 
       # .. update (s,x)
       s <- s + step * delta[1, ]
       x <- x + step * delta[-1, ]
-      if (s < 0) {ss <- FALSE}
+      if (s < 0) {
+        ss <- FALSE
+        }
     }
     tune <- tune * mu
   }
@@ -111,60 +179,3 @@ find_overlap <- function(ell, initial, centering_steps = 5L, tol_newton = 0.1, m
   return(structure(list("x" = x, "s" = s, "call" = match.call()),
                    class = "find_overlap"))
 }
-
-distance_to_edge <- function(x, ell) {
-  sapply(ell, function(e) {
-    diff <- matrix(x - e$c, ncol = 1)
-    t(diff) %*% e$P %*% diff - e$r
-  })
-}
-
-speed <- function(ell, x) {
-  lapply(ell, function(e) {
-    2 * e$P %*% x + e$q
-  })
-}
-
-acceleration <- function(ell, x) {
-  lapply(ell, function(e) {
-    2 * e$P
-  })
-}
-
-target <- function(s, tune, dist) {
-  tune * s - sum(log(s - dist)) - log(s)
-}
-
-target_gradient <- function(s, tune, dist, spee) {
-  top <- tune - sum(1 / (s - dist))
-  v <- lapply(seq_along(dist), function(i) {
-    (1 / (s - dist[[i]])) * spee[[i]]
-  })
-  bottom <- Reduce("+", v)
-  return(matrix(c(top, bottom), ncol = 1))
-}
-
-target_hessian <- function(s, tune, dist, spee, acc) {
-  dsds <- sum(1 / (s - dist) ^ 2)
-  v <- lapply(seq_along(dist), function(i) {
-    (1 / (s - dist[[i]]) ^ 2) * spee[[i]]
-  })
-  dsdx <- - Reduce("+", v)
-  m <- lapply(seq_along(dist), function(i) {
-    (1 / (s - dist[[i]]) ^ 2) * spee[[i]] %*% t(spee[[i]]) +
-      (1 / (s - dist[[i]])) * acc[[i]]
-  })
-  dxdx <- Reduce("+", m)
-  return(cbind(rbind(dsds, dsdx), rbind(t(dsdx), dxdx)))
-}
-
-
-linesearch_test <- function(ell, min_s, s, x, dist, decrement, tune, delta, step) {
-  if (step == 0) {return(FALSE)}
-  s_delta <- s + step * delta[1, ]
-  if (s_delta <= min_s) {return(TRUE)}
-  dist_delta <- distance_to_edge(x + step * delta[-1, ], ell)
-  if (max(dist_delta) >= s_delta){return(TRUE)}
-  return(FALSE)
-}
-

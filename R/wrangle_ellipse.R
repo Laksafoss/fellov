@@ -61,9 +61,9 @@
 #' e3d <- list(c = c(3,2,1), P = matrix(c(3,1,2,1,5,0,2,0,2), ncol = 3))
 #'
 #' f1 <- wrangle_ellipse(e2d) # (c,P,r) parameterization
-#' f2 <- wrangle_ellipse(e2d, out_params = c("c", "l", "L", "r"))
+#' f2 <- wrangle_ellipse(e2d, out_params = c("c", "e", "U", "r"))
 #' f3 <- wrangle_ellipse(list("ellipse1" = e2d, "ellipse2" = e3d),
-#'                       c("n", "c", "l", "D"))
+#'                       c("n", "c", "U", "D"))
 #'
 #' @export
 wrangle_ellipse <- function(ell, out_params = c("c", "P", "r")) {

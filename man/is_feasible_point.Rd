@@ -10,7 +10,7 @@ is_feasible_point(point, ell)
 \item{point}{a numeric of length equal to the dimensions of the ellipses in
 \code{ell}.}
 
-\item{ell}{a list of at least one ellipse; see \code{\link{wrangle_ellipses}}.}
+\item{ell}{a list of at least one ellipse; see \code{\link{wrangle_ellipse}}.}
 }
 \value{
 \code{is_feasible_point} returns an object of
@@ -40,4 +40,8 @@ e2 <- list("c" = c(0,2), "S" = matrix(c(4,1,1,1), ncol = 2), "r" = 3)
 is_feasible_point(c(1.1,0.9), e1)
 is_feasible_point(c(1,0), list(e1, e2))
 
+}
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization.
 }

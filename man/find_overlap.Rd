@@ -7,7 +7,7 @@
 find_overlap(
   ell,
   initial,
-  centering_steps = 5L,
+  centering_steps = 3L,
   tol_newton = 0.1,
   mu = 20,
   alpha = 0.3,
@@ -23,15 +23,15 @@ parameters to be optimized over.}
 
 \item{centering_steps}{number of centering steps, must be atleast 1.}
 
-\item{tol_newton}{TODO}
+\item{tol_newton}{tolerance for the newton method in each centering step.}
 
-\item{mu}{TODO}
+\item{mu}{tuning parameter for centering method.}
 
-\item{alpha}{TODO}
+\item{alpha}{tuning parameter for backtracking lineseach in newton  steps.}
 
-\item{beta}{TODO}
+\item{beta}{tuning parameter for backtracking lineseach in newton  steps.}
 
-\item{tol_step}{TODO}
+\item{tol_step}{meachnism for jumping to the next centoring step}
 }
 \value{
 The function \code{find_overlap} returns an object of \code{\link[base]{class}}
@@ -60,10 +60,9 @@ solving the following quadratically constrained problem
 }
 To solve this convex problem the logarithmic barrier method is used.
 }
-\examples{
-e1 <- list(c = c(0,0), P = matrix(c(1,0,0,1), ncol = 2), r = 2)
-e2 <- list(c = c(1,1), P = matrix(c(1,0,0,1), ncol = 2), r = 1)
-e3 <- list(c = c(1,0), S = matrix(c(3,1,1,2), ncol = 2), r = 0.5)
-
-ellipse_overlap(list(e1, e2, e3))
+\seealso{
+\code{\link{wrangle_ellipse}} for detailed on ellipse
+parameterization. The functions \code{\link{feasible_overlap}} and
+\code{\link{feasible_point}} both use \code{find_overlap} internally.
 }
+\keyword{internal}

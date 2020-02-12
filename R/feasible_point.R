@@ -8,7 +8,7 @@
 #' of two or more fully specified ellipses \code{ell}. If the intersections is
 #' empty \code{NA} is returned.
 #'
-#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipses}}.
+#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.
 #' @param ... additional arguments to be passed to \code{\link{find_overlap}}.
 #'
 #' @return \code{feasible_point} returns an object of \code{\link[base]{class}}
@@ -17,6 +17,9 @@
 #'   \item{distance }{ A data.frame with the ellipse specific distances.}
 #'   \item{optim }{ The final internal optimization value.}
 #'   \item{call }{ The matched call.}
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization.
 #'
 #' @examples
 #' # two dimensional ellipses
@@ -89,7 +92,7 @@ print.feasible_point <- function(x, ...) {
 #'
 #' @param point a numeric of length equal to the dimensions of the ellipses in
 #'   \code{ell}.
-#' @param ell a list of at least one ellipse; see \code{\link{wrangle_ellipses}}.
+#' @param ell a list of at least one ellipse; see \code{\link{wrangle_ellipse}}.
 #'
 #' @return \code{is_feasible_point} returns an object of
 #'   \code{\link[base]{class}} "\code{is_feasible_point}". This object is a list
@@ -101,6 +104,9 @@ print.feasible_point <- function(x, ...) {
 #'     of each ellipse, the radius of each ellipse and a logical indicator,
 #'     which is \code{TRUE} when \code{x} is an element in the ellipse.}
 #'   \item{call }{ the match call.}
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization.
 #'
 #' @examples
 #' e1 <- list("c" = c(1,1), "P" = matrix(c(3,1,1,2), ncol = 2), "r" = 2)

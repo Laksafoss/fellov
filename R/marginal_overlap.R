@@ -12,22 +12,23 @@
 #' not imply that the ellipses themselves intersect non-emptily. The example
 #' below is constructed to illustrate this.
 #'
-#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipses}}.
+#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.
 #' @param margins either "all" or a vector indicating the margins to project the
 #'   ellipses onto and take intersections.
 #'
 #' @return \code{marginal_overlap} returns an object of \code{\link[base]{class}}
 #' "marginal_overlap" which contains a data.frame where the coloumns descibe the
 #' following
-#'   \description{
-#'     \item{Margin}{Intputted \code{margins}.}
+#'   \item{Margin}{Intputted \code{margins}.}
 #'     \item{Overlap}{Whether the ellipses overlap when projected onto
 #'       corresponding margin.}
 #'     \item{Lower}{Lower endpoint of intersection interval. \code{NA} if the
 #'       intersection is empty.}
 #'     \item{Upper}{Upper endpoint of intersection interval. \code{NA} if the
 #'       intersection is empty.}
-#'   }
+#'
+#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+#' parameterization.
 #'
 #' @examples
 #' ## two dimensional ellipses

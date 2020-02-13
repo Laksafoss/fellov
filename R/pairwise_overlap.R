@@ -9,7 +9,8 @@
 #' intersection of all the ellipses is non-empty. The example below is
 #' constructed to illustrate this.
 #'
-#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.
+#' @param ell a list of at least two (non degenerate) ellipses; see
+#'   \code{\link{wrangle_ellipse}}.
 #' @param ... additional arguments to be passed to the low level funcitons.
 #'
 #' @return

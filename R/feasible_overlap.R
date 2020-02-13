@@ -4,13 +4,25 @@
 #' have a non-empty intersection.
 #'
 #' Given a list of ellipses \code{ell} the function \code{feasible_overlap} will
-#' find the smallest radius such that the ellipses from \code{ell} overlap.
+#' find the smallest radius such that the ellipses from \code{ell} overlap. This
+#' is done by solving the following quadratically constrained problem
+#'
+#' \tabular{cclr}{
+#' \ifelse{html}{\out{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp}}{\eqn{\qquad}}\tab
+#' \ifelse{html}{\out{&nbsp min<sub>(x,s)</sub> &nbsp}}{\eqn{\min_{(x,s)}\quad}}
+#'  \tab s \tab \cr
+#' \tab s.t. \tab
+#' \ifelse{html}{\out{(x - c<sub>i</sub>)<sup>T</sup> P<sub>i</sub> (x - c<sub>i</sub>) - r<sub>i</sub> &#8804 s}}{\eqn{(x - c_i)^T P_i (x - c_i) - r_i \leq s}}
+#' \tab \ifelse{html}{\out{&nbsp;&nbsp}}{\eqn{\quad}} for all i = 1, ..., d\cr
+#' }
+#' To solve this convex problem the logarithmic barrier method is used.
 #'
 #' Note that it is not necessary to specify ellipse radii in \code{ell}.
 #'
 #'
-#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.
-#' @param ... additional arguments to be passed to \code{\link{find_overlap}}
+#' @param ell a list of at least two (non degenerate) ellipses; see
+#'   \code{\link{wrangle_ellipse}}.
+#' @param ... additional arguments to be passed to internal functions.
 #'
 #' @return \code{feasible_overlap} returns an object of \code{\link[base]{class}}
 #' "\code{feasible_overlap}". This object is a list with the following entries:

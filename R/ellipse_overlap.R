@@ -1,49 +1,49 @@
-#' QCQP Solver for Feasibility Problems
-#'
-#' \code{find_overlap} is used to find the smallest radius of two or more
-#' ellipses that results in the existance of a feasible point, i.e. the ellipse
-#' intersect.
-#'
-#' The function \code{find_overlap} finds the smallest possible radius resulting
-#' in a non-empty intersection of the ellipses \code{ell}. This is done by
-#' solving the following quadratically constrained problem
-#'
-#' \tabular{cclr}{
-#' \ifelse{html}{\out{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp}}{\eqn{\qquad}}\tab
-#' \ifelse{html}{\out{&nbsp min<sub>(x,s)</sub> &nbsp}}{\eqn{\min_{(x,s)}\quad}}
-#'  \tab s \tab \cr
-#' \tab s.t. \tab
-#' \ifelse{html}{\out{(x - c<sub>i</sub>)<sup>T</sup> P<sub>i</sub> (x - c<sub>i</sub>) - r<sub>i</sub> &#8804 s}}{\eqn{(x - c_i)^T P_i (x - c_i) - r_i \leq s}}
-#' \tab \ifelse{html}{\out{&nbsp;&nbsp}}{\eqn{\quad}} for all i = 1, ..., d\cr
-#' }
-#' To solve this convex problem the logarithmic barrier method is used.
-#'
-#'
-#' @param ell a list of length at least 2 describing the ellipses.
-#' @param initial a numeric vectors or matrix with initial values for the
-#'   parameters to be optimized over.
-#' @param centering_steps number of centering steps, must be atleast 1.
-#' @param tol_newton tolerance for the newton method in each centering step.
-#' @param mu tuning parameter for centering method.
-#' @param alpha tuning parameter for backtracking lineseach in newton  steps.
-#' @param beta tuning parameter for backtracking lineseach in newton  steps.
-#' @param tol_step meachnism for jumping to the next centoring step
-#'
-#' @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
-#' parameterization. The functions \code{\link{feasible_overlap}} and
-#' \code{\link{feasible_point}} both use \code{find_overlap} internally.
-#'
-#' @return
-#' The function \code{find_overlap} returns an object of \code{\link[base]{class}}
-#' "\code{find_overlap}" with the following components:
-#' \item{x }{ the global minimum; a point in the smallest possible intersection.}
-#' \item{s }{ the optimal value at the global minimum.}
-#' \item{call }{ the matched call.}
-#'
-#'
-#' @keywords internal
-#'
-#' @export
+# QCQP Solver for Feasibility Problems
+#
+# \code{find_overlap} is used to find the smallest radius of two or more
+# ellipses that results in the existance of a feasible point, i.e. the ellipse
+# intersect.
+#
+# The function \code{find_overlap} finds the smallest possible radius resulting
+# in a non-empty intersection of the ellipses \code{ell}. This is done by
+# solving the following quadratically constrained problem
+#
+# \tabular{cclr}{
+# \ifelse{html}{\out{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp}}{\eqn{\qquad}}\tab
+# \ifelse{html}{\out{&nbsp min<sub>(x,s)</sub> &nbsp}}{\eqn{\min_{(x,s)}\quad}}
+#  \tab s \tab \cr
+# \tab s.t. \tab
+# \ifelse{html}{\out{(x - c<sub>i</sub>)<sup>T</sup> P<sub>i</sub> (x - c<sub>i</sub>) - r<sub>i</sub> &#8804 s}}{\eqn{(x - c_i)^T P_i (x - c_i) - r_i \leq s}}
+# \tab \ifelse{html}{\out{&nbsp;&nbsp}}{\eqn{\quad}} for all i = 1, ..., d\cr
+# }
+# To solve this convex problem the logarithmic barrier method is used.
+#
+#
+# @param ell a list of length at least 2 describing the ellipses.
+# @param initial a numeric vectors or matrix with initial values for the
+#   parameters to be optimized over.
+# @param centering_steps number of centering steps, must be atleast 1.
+# @param tol_newton tolerance for the newton method in each centering step.
+# @param mu tuning parameter for centering method.
+# @param alpha tuning parameter for backtracking lineseach in newton  steps.
+# @param beta tuning parameter for backtracking lineseach in newton  steps.
+# @param tol_step meachnism for jumping to the next centoring step
+#
+# @seealso \code{\link{wrangle_ellipse}} for detailed on ellipse
+# parameterization. The functions \code{\link{feasible_overlap}} and
+# \code{\link{feasible_point}} both use \code{find_overlap} internally.
+#
+# @return
+# The function \code{find_overlap} returns an object of \code{\link[base]{class}}
+# "\code{find_overlap}" with the following components:
+# \item{x }{ the global minimum; a point in the smallest possible intersection.}
+# \item{s }{ the optimal value at the global minimum.}
+# \item{call }{ the matched call.}
+#
+#
+# @keywords internal
+#
+# @export
 find_overlap <- function(ell, initial, centering_steps = 3L, tol_newton = 0.1, mu = 20, alpha = 0.3, beta = 0.8, tol_step = 1e-5) {
   if (! is.numeric(centering_steps)) {stop("'centering_steps' must be an integer larget than 1.")}
   centering_steps <- as.integer(centering_steps)

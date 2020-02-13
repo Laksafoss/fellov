@@ -39,8 +39,8 @@
 #' parameterized.
 #'
 #'
-#' @param ell a list of ellipses to be wrangled. An ellipse is a named list
-#'   and each entry corresponds to a parameter. To ensure all
+#' @param ell a list of (non degenerate) ellipses to be wrangled. An ellipse is
+#'   a named list and each entry corresponds to a parameter. To ensure all
 #'   \code{out_params} can be calculated one of the parametrizations listed
 #'   below in the description must be specified. Some \code{out_params} do
 #'   not require a fully parametrized ellipse and so partially specified

@@ -7,7 +7,8 @@
 marginal_overlap(ell, margins = "all")
 }
 \arguments{
-\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.}
+\item{ell}{a list of at least two (non degenerate) ellipses; see
+\code{\link{wrangle_ellipse}}.}
 
 \item{margins}{either "all" or a vector indicating the margins to project the
 ellipses onto and take intersections.}

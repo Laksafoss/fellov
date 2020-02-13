@@ -7,9 +7,10 @@
 feasible_point(ell, ...)
 }
 \arguments{
-\item{ell}{a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.}
+\item{ell}{a list of at least two (non degenerate) ellipses; see
+\code{\link{wrangle_ellipse}}.}
 
-\item{...}{additional arguments to be passed to \code{\link{find_overlap}}.}
+\item{...}{additional arguments to be passed to internal functions.}
 }
 \value{
 \code{feasible_point} returns an object of \code{\link[base]{class}}

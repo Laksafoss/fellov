@@ -7,7 +7,8 @@
 pairwise_overlap(ell, ...)
 }
 \arguments{
-\item{ell}{a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.}
+\item{ell}{a list of at least two (non degenerate) ellipses; see
+\code{\link{wrangle_ellipse}}.}
 
 \item{...}{additional arguments to be passed to the low level funcitons.}
 }

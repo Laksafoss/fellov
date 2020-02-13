@@ -8,8 +8,9 @@
 #' of two or more fully specified ellipses \code{ell}. If the intersections is
 #' empty \code{NA} is returned.
 #'
-#' @param ell a list of at least two ellipses; see \code{\link{wrangle_ellipse}}.
-#' @param ... additional arguments to be passed to \code{\link{find_overlap}}.
+#' @param ell a list of at least two (non degenerate) ellipses; see
+#'   \code{\link{wrangle_ellipse}}.
+#' @param ... additional arguments to be passed to internal functions.
 #'
 #' @return \code{feasible_point} returns an object of \code{\link[base]{class}}
 #'   "\code{feasible_point}" with the following entries

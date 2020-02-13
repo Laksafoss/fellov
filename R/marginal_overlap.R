@@ -12,7 +12,8 @@
 #' not imply that the ellipses themselves intersect non-emptily. The example
 #' below is constructed to illustrate this.
 #'
-#' @param ell a list of at least 2 ellipses; see \code{\link{wrangle_ellipse}}.
+#' @param ell a list of at least two (non degenerate) ellipses; see
+#'   \code{\link{wrangle_ellipse}}.
 #' @param margins either "all" or a vector indicating the margins to project the
 #'   ellipses onto and take intersections.
 #'
